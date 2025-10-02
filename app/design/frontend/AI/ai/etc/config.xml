@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/config.xsd">
+    <default>
+        <cms>
+            <wysiwyg>
+                <allowed_attributes>
+                    <button>class,id,style,data-response</button>
+                </allowed_attributes>
+            </wysiwyg>
+        </cms>
+    </default>
+</config>

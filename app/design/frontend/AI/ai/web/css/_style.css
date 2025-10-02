@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
+
+:root {
+    --black: #322d29;
+  }
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f9f9f9;
+}
+
+h1, .page-title {
+    font-weight: 600;
+    color: var(--black);
+    text-align: center;
+    font-size: 3.2rem;
+}
+
+#maincontent{
+    height: 90vh;
+    align-content: center;
+}
+
+.minicart-wrapper .action.showcart {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+.minicart-wrapper .action.showcart.active:before, .minicart-wrapper .action.showcart:before {
+    content: '';
+    background-image: url('../images/minicart.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.minicart-wrapper .action.showcart .text {
+    clip: rect(0, 0, 0, 0);
+    position: absolute;
+    overflow: hidden;
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+}
+
+.minicart-wrapper .action.showcart .counter.qty {
+    margin-left: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    position: static;
+    width: auto;
+    height: auto;
+    background: none;
+    color: inherit;
+    clip: auto;
+    overflow: visible;
+}
+
+.minicart-wrapper .action.showcart .counter.qty.empty {
+    display: none;
+}
+
+.button-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1080px;
+}
+
+.button-container button{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.button-container button:nth-child(1) {
+    transform: rotate(2deg);
+}
+
+.button-container button:nth-child(2) {
+    transform: rotate(-3deg);
+}
+
+.button-container button:nth-child(3) {
+    transform: rotate(2deg);
+}
+
+.button-container button:nth-child(4) {
+    transform: rotate(-2deg);
+}
+
+.upload-container{
+    background-image: url('../images/bg-buttons.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    height: 72px;
+    width: 130px;
+    gap: 8px;
+    margin-top: 100px;
+}
+
+.upload-btn, .send-btn{
+display: flex;
+align-items: center;
+justify-content: center;
+width: 40px;
+height: 40px;
+border: none;
+border-radius: 8px;
+padding: 8px;
+}
+
+.upload-btn{
+    background-color: transparent;
+}
+
+.send-btn{
+    background-color: var(--black);
+}
+
+.send-btn img{
+    width: 18px;
+}
+
+.upload-btn:hover{
+    background-color: transparent;
+    border: 1px solid #322d29;
+}
+
+.send-btn:hover{
+    background-color: #1c1a18;
+    border: none;
+}

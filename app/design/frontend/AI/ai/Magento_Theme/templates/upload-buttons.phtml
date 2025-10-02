@@ -1,0 +1,17 @@
+<div class="upload-container">
+    <button type="button" class="upload-btn">
+    <img src="<?php echo $block->getViewFileUrl('images/add.png'); ?>" alt="add"/>
+    </button>
+
+    <button type="button" class="send-btn">
+    <img src="<?php echo $block->getViewFileUrl('images/send-btn.png'); ?>" alt="send-btn"/>
+    </button>
+
+    <input type="file" id="upload-input" accept=".png,.jpg" style="display:none"/>
+</div>
+
+<script type="text/javascript">
+    require(['js/upload'], function(upload){
+        upload();
+    });
+</script>

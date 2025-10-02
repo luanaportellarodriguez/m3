@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "97ca88233f834f38a131f147ddaae29b",
+    "content-hash": "803928307265ab0442b8b0243237ef5d",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -29024,13 +29024,66 @@
             "time": "2021-07-11T04:52:41+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "honl/magento2-templatehints",
+            "version": "0.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ho-nl/magento2-Ho_Templatehints.git",
+                "reference": "21864fc970e18c5442097b520d35ec143440053e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ho-nl/magento2-Ho_Templatehints/zipball/21864fc970e18c5442097b520d35ec143440053e",
+                "reference": "21864fc970e18c5442097b520d35ec143440053e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.3||~7.4||^8.1||~8.2"
+            },
+            "replace": {
+                "ho-nl/magento2-templatehints": "self.version"
+            },
+            "type": "magento2-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Ho\\Templatehints\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Paul Hachmang - H&O",
+                    "email": "paul@h-o.nl"
+                }
+            ],
+            "description": "H&O Magento 2 Advanced Template Hints module",
+            "homepage": "https://github.com/ho-nl/magento2-Ho_Templatehints",
+            "support": {
+                "issues": "https://github.com/ho-nl/magento2-Ho_Templatehints/issues",
+                "source": "https://github.com/ho-nl/magento2-Ho_Templatehints/tree/0.6.0"
+            },
+            "time": "2025-01-22T15:22:21+00:00"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "alpha",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }

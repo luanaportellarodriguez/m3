@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="cms-page" remove="true"/>
+        <referenceContainer name="footer-container" remove="true"/>
+        <referenceContainer name="page.bottom" remove="true"/>
+        <referenceBlock name="report.bugs" remove="true"/>
+        <referenceContainer name="before.body.end" remove="true"/>
+        <referenceContainer name="top.search" remove="true"/>
+        <referenceContainer name="header.panel.wrapper" remove="true"/>
+        <referenceContainer name="navigation.sections" remove="true"/>
+
+        <referenceContainer name="content">
+            <block class="Magento\Theme\Block\Html\Title" name="page.main.title" template="Magento_Theme::title.phtml"/>
+            <block class="Magento\Framework\View\Element\Template"
+                   name="ai.home.placeholder"
+                   template="Magento_Theme::home-empty.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

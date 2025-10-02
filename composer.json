@@ -96,5 +96,8 @@
         "post-update-cmd": [
             "@generate-schema"
         ]
+    },
+    "require-dev": {
+        "honl/magento2-templatehints": "^0.6.0"
     }
 }
