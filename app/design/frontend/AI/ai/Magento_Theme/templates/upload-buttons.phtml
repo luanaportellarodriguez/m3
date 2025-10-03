@@ -1,13 +1,22 @@
 <div class="upload-container">
     <button type="button" class="upload-btn">
-    <img src="<?php echo $block->getViewFileUrl('images/add.png'); ?>" alt="add"/>
+        <img src="<?php echo $block->getViewFileUrl('images/add.png'); ?>" alt="add"/>
     </button>
 
     <button type="button" class="send-btn">
-    <img src="<?php echo $block->getViewFileUrl('images/send-btn.png'); ?>" alt="send-btn"/>
+        <img src="<?php echo $block->getViewFileUrl('images/send-btn.png'); ?>" alt="send-btn"/>
     </button>
 
-    <input type="file" id="upload-input" accept=".png,.jpg" style="display:none"/>
+    <input type="file" id="upload-input" accept=".png,.jpg,.jpeg" style="display:none"/>
+    
+    <!-- Container para a miniatura -->
+    <div id="thumbnail-container" style="display:none;">
+        <div class="thumbnail-wrapper">
+            <img id="thumbnail-preview" src="" alt="preview"/>
+        </div>
+        <button type="button" class="delete-thumbnail" title="Remover imagem">
+        </button>
+    </div>
 </div>
 
 <script type="text/javascript">
