@@ -83,6 +83,48 @@ h1, .page-title {
     transition: transform 0.3s ease;
 }
 
+.status-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .option-btn.select-option .status-icon {
+    display: block;
+  }
+  
+  .status-icon::before,
+  .status-icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.3s ease;
+  }
+  
+  .status-icon::before {
+    background-image: url('../images/selected.png');
+    opacity: 1;
+  }
+  
+  .status-icon::after {
+    background-image: url('../images/delete.png');
+    opacity: 0;
+  }
+  
+  .status-icon:hover::before {
+    opacity: 0;
+  }
+  .status-icon:hover::after {
+    opacity: 1;
+  }
+  
+
 .button-container button:nth-child(1) {
     transform: rotate(2deg);
 }
@@ -120,7 +162,7 @@ justify-content: center;
 width: 40px;
 height: 40px;
 border: none;
-border-radius: 8px;
+border-radius: 20px;
 padding: 8px;
 }
 
