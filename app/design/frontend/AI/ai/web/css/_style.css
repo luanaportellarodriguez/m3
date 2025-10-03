@@ -68,6 +68,8 @@ h1, .page-title {
     display: none;
 }
 
+/* ///////////////////////estilos desenho*/
+
 .button-container{
     display: flex;
     justify-content: center;
@@ -85,7 +87,7 @@ h1, .page-title {
 
 .status-icon {
     position: absolute;
-    top: 5px;
+    top: -5px;
     right: 5px;
     width: 40px;
     height: 40px;
@@ -97,34 +99,17 @@ h1, .page-title {
     display: block;
   }
   
-  .status-icon::before,
-  .status-icon::after {
+  .status-icon::before {
     content: "";
     position: absolute;
     inset: 0;
     background-size: cover;
     background-position: center;
     transition: opacity 0.3s ease;
-  }
-  
-  .status-icon::before {
-    background-image: url('../images/selected.png');
-    opacity: 1;
-  }
-  
-  .status-icon::after {
     background-image: url('../images/delete.png');
-    opacity: 0;
-  }
-  
-  .status-icon:hover::before {
-    opacity: 0;
-  }
-  .status-icon:hover::after {
     opacity: 1;
   }
-  
-
+    
 .button-container button:nth-child(1) {
     transform: rotate(2deg);
 }
@@ -141,6 +126,8 @@ h1, .page-title {
     transform: rotate(-2deg);
 }
 
+/* ///////////////////////botões upload */
+
 .upload-container{
     background-image: url('../images/bg-buttons.png');
     background-repeat: no-repeat;
@@ -152,7 +139,7 @@ h1, .page-title {
     height: 72px;
     width: 130px;
     gap: 8px;
-    margin-top: 100px;
+    margin-top: 180px;
 }
 
 .upload-btn, .send-btn{
@@ -163,27 +150,61 @@ width: 40px;
 height: 40px;
 border: none;
 border-radius: 20px;
-padding: 8px;
-}
-
-.upload-btn{
-    background-color: transparent;
-}
-
-.send-btn{
-    background-color: var(--black);
-}
-
-.send-btn img{
-    width: 18px;
-}
-
-.upload-btn:hover{
-    background-color: transparent;
-    border: 1px solid #322d29;
+padding: 0;
 }
 
 .send-btn:hover{
-    background-color: #1c1a18;
+border: none;
+}
+
+.upload-btn:hover{
+    border: 1px solid #322d29;
+}
+
+
+/* ///////////////////////miniatura */
+.upload-container {
+    position: relative;
+}
+
+#thumbnail-container {
+    position: absolute;
+    top: -154px;
+    left: 7px;
+    display: inline-block;
+}
+
+.thumbnail-wrapper {
+    position: relative;
+    display: inline-block;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    padding: 4px;
+}
+
+#thumbnail-preview {
+    display: block;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.delete-thumbnail, .delete-thumbnail:hover {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../images/delete.png');
+    opacity: 1;
+    position: absolute;
+    top: -14px;
+    left: 107px;
+    width: 20px;
+    height: 30px;
+    cursor: pointer;
+    background-color: transparent;
     border: none;
 }
