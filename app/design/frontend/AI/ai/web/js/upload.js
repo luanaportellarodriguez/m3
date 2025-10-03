@@ -22,8 +22,8 @@ define(['jquery'], function ($) {
                     return;
                 }
 
-                // Validação de tamanho (opcional - 5MB)
-                var maxSize = 5 * 1024 * 1024; // 5MB
+                // Validação de tamanho (5MB)
+                var maxSize = 5 * 1024 * 1024;
                 if (file.size > maxSize) {
                     alert('O arquivo deve ter no máximo 5MB');
                     $(this).val('');
@@ -33,7 +33,7 @@ define(['jquery'], function ($) {
                 // Armazena o arquivo atual
                 currentFile = file;
 
-                // Cria preview da imagem
+                // Cria preview da imagem na miniatura
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     $('#thumbnail-preview').attr('src', event.target.result);
@@ -44,35 +44,62 @@ define(['jquery'], function ($) {
 
             // Botão de deletar miniatura
             $(document).on('click', '.delete-thumbnail', function () {
-                // Remove o preview
                 $('#thumbnail-container').fadeOut(0);
                 $('#thumbnail-preview').attr('src', '');
-                
-                // Limpa o input file
                 $('#upload-input').val('');
-                
-                // Limpa o arquivo armazenado
                 currentFile = null;
             });
 
-            // Exemplo de uso do botão enviar
+            // Botão de enviar
             $('.send-btn').on('click', function () {
                 if (!currentFile) {
                     alert('Por favor, selecione uma imagem primeiro');
                     return;
                 }
 
-                // Aqui você pode adicionar a lógica de envio
+                // Validações finais
+                if (!['image/png', 'image/jpeg'].includes(currentFile.type)) {
+                    alert('Tipo de arquivo inválido');
+                    return;
+                }
+
+                if (currentFile.size > 5 * 1024 * 1024) {
+                    alert('Arquivo muito grande');
+                    return;
+                }
+
+                // Esconde elementos
+                $('.button-container').hide();
+                $('.page-title-wrapper').hide();
+                $('#thumbnail-container').hide();
+
+                // Carrega a imagem no preview do popup
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    $('#uploaded-preview').attr('src', event.target.result);
+                    // Mostra o popup
+                    $('#popup-working').fadeIn(300);
+                };
+                reader.readAsDataURL(currentFile);
+
+                // Aqui você faria o envio real para o servidor
                 console.log('Enviando arquivo:', currentFile.name);
                 
-                // Exemplo de como criar um FormData para envio
+                // Exemplo de FormData para envio
                 var formData = new FormData();
                 formData.append('image', currentFile);
                 
-                // Aqui você faria o AJAX para enviar para o servidor
-                // $.ajax({ ... });
-                
-                alert('Pronto para enviar: ' + currentFile.name);
+                // AJAX aqui
+                // $.ajax({
+                //     url: 'sua-url-de-upload',
+                //     type: 'POST',
+                //     data: formData,
+                //     processData: false,
+                //     contentType: false,
+                //     success: function(response) {
+                //         console.log('Upload concluído', response);
+                //     }
+                // });
             });
         });
     };

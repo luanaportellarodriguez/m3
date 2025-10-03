@@ -1,6 +1,8 @@
-<?php
-/**
- * Placeholder da home – mantém a tag <main> renderizada.
- */
-?>
-<div class="ai-home-placeholder"></div>
+<!-- home-empty.phtml -->
+
+
+<?= $block->getLayout()
+    ->createBlock(\Magento\Framework\View\Element\Template::class)
+    ->setTemplate('Magento_Theme::popup-working.phtml')
+    ->toHtml() ?>
+    
