@@ -1,39 +1,50 @@
-define(['jquery'], function ($) {
+define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
     'use strict';
 
     return function () {
         var currentFile = null;
+        var selectedStyle = null;
+        var uploadedImageUrl = null;
 
         $(document).ready(function () {
-            // Clique no botão de upload
+            
+            // Captura o estilo selecionado
+            $(document).on('click', '.option-btn', function(e) {
+                if ($(e.target).hasClass('status-icon')) {
+                    $(this).removeClass('select-option');
+                    selectedStyle = null;
+                    return;
+                }
+
+                $('.option-btn').removeClass('select-option');
+                $(this).addClass('select-option');
+                selectedStyle = $(this).data('role');
+            });
+
+            // Upload
             $('.upload-btn').on('click', function () {
                 $('#upload-input').trigger('click');
             });
 
-            // Quando um arquivo é selecionado
             $('#upload-input').on('change', function (e) {
                 var file = this.files[0];
                 if (!file) return;
 
-                // Validação de tipo
                 if (!['image/png', 'image/jpeg'].includes(file.type)) {
-                    alert('Apenas arquivos PNG e JPG são permitidos');
+                    alert({content: 'Apenas arquivos PNG e JPG são permitidos'});
                     $(this).val('');
                     return;
                 }
 
-                // Validação de tamanho (5MB)
                 var maxSize = 5 * 1024 * 1024;
                 if (file.size > maxSize) {
-                    alert('O arquivo deve ter no máximo 5MB');
+                    alert({content: 'O arquivo deve ter no máximo 5MB'});
                     $(this).val('');
                     return;
                 }
 
-                // Armazena o arquivo atual
                 currentFile = file;
 
-                // Cria preview da imagem na miniatura
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     $('#thumbnail-preview').attr('src', event.target.result);
@@ -42,7 +53,6 @@ define(['jquery'], function ($) {
                 reader.readAsDataURL(file);
             });
 
-            // Botão de deletar miniatura
             $(document).on('click', '.delete-thumbnail', function () {
                 $('#thumbnail-container').fadeOut(0);
                 $('#thumbnail-preview').attr('src', '');
@@ -50,21 +60,25 @@ define(['jquery'], function ($) {
                 currentFile = null;
             });
 
-            // Botão de enviar
+            // ENVIAR
             $('.send-btn').on('click', function () {
                 if (!currentFile) {
-                    alert('Por favor, selecione uma imagem primeiro');
+                    alert({content: 'Por favor, selecione uma imagem primeiro'});
                     return;
                 }
 
-                // Validações finais
+                if (!selectedStyle) {
+                    alert({content: 'Por favor, selecione um estilo artístico'});
+                    return;
+                }
+
                 if (!['image/png', 'image/jpeg'].includes(currentFile.type)) {
-                    alert('Tipo de arquivo inválido');
+                    alert({content: 'Tipo de arquivo inválido'});
                     return;
                 }
 
                 if (currentFile.size > 5 * 1024 * 1024) {
-                    alert('Arquivo muito grande');
+                    alert({content: 'Arquivo muito grande'});
                     return;
                 }
 
@@ -72,35 +86,172 @@ define(['jquery'], function ($) {
                 $('.button-container').hide();
                 $('.page-title-wrapper').hide();
                 $('#thumbnail-container').hide();
+                $('.upload-container').hide();
 
-                // Carrega a imagem no preview do popup
+                // Mostra loading
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     $('#uploaded-preview').attr('src', event.target.result);
-                    // Mostra o popup
                     $('#popup-working').fadeIn(300);
                 };
                 reader.readAsDataURL(currentFile);
 
-                // Aqui você faria o envio real para o servidor
-                console.log('Enviando arquivo:', currentFile.name);
-                
-                // Exemplo de FormData para envio
+                // AJAX Upload
                 var formData = new FormData();
                 formData.append('image', currentFile);
-                
-                // AJAX aqui
-                // $.ajax({
-                //     url: 'sua-url-de-upload',
-                //     type: 'POST',
-                //     data: formData,
-                //     processData: false,
-                //     contentType: false,
-                //     success: function(response) {
-                //         console.log('Upload concluído', response);
-                //     }
-                // });
+                formData.append('style', selectedStyle);
+
+                $.ajax({
+                    url: '/ai/index/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    showLoader: false,
+                    success: function(response) {
+                        if (response.success) {
+                            uploadedImageUrl = response.url;
+                            
+                            // Simula processamento da IA (substitua pela chamada real)
+                            setTimeout(function() {
+                                $('.working-content').hide();
+                                $('#uploaded-preview').attr('src', uploadedImageUrl);
+                                $('.add-cart').show();
+                            }, 3000);
+                            
+                        } else {
+                            alert({content: 'Erro ao enviar imagem: ' + response.error});
+                            resetPage();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert({content: 'Erro na requisição: ' + error});
+                        resetPage();
+                    }
+                });
             });
-        });
+
+            // ADICIONAR AO CARRINHO
+            $(document).on('click', '.add-cart', function() {
+                if (!uploadedImageUrl || !selectedStyle) {
+                    alert({content: 'Dados incompletos'});
+                    return;
+                }
+
+                var skuMap = {
+                    '3d': 'redraw-3d',
+                    'fotorrealista': 'redraw-fotorrealista',
+                    'aquarela': 'redraw-aquarela',
+                    'anime': 'redraw-anime'
+                };
+
+                var productSku = skuMap[selectedStyle];
+
+                // Adiciona ao carrinho via AJAX
+                $.ajax({
+                    url: '/ai/cart/add',
+                    type: 'POST',
+                    data: {
+                        sku: productSku,
+                        image_url: uploadedImageUrl,
+                        style: selectedStyle
+                    },
+                    showLoader: true,
+                    success: function(response) {
+                        if (response.success) {
+                            alert({
+                                content: response.message,
+                                actions: {
+                                    always: function() {
+                                        // Recarrega a página ou redireciona para o carrinho
+                                        window.location.href = '/checkout/cart';
+                                    }
+                                }
+                            });
+                        } else {
+                            alert({content: 'Erro: ' + response.error});
+                        }
+                    },
+                    error: function() {
+                        alert({content: 'Erro ao adicionar ao carrinho'});
+                    }
+                });
+            });
+
+            
+$(document).on('click', '.delete-draw', function () {
+    resetPage();
+});
+
+$(document).on('click', '.refresh-draw', function () {
+    if (!currentFile || !selectedStyle) {
+        alert({content: 'Não há imagem para reenviar. Selecione uma nova arte.'});
+        return;
+    }
+
+    $('.working-content').show();
+
+    var reader = new FileReader();
+    reader.onload = function (event) {
+        $('#uploaded-preview').attr('src', event.target.result);
+        $('#popup-working').fadeIn(300);
     };
+    reader.readAsDataURL(currentFile);
+
+    var formData = new FormData();
+    formData.append('image', currentFile);
+    formData.append('style', selectedStyle);
+
+    $.ajax({
+        url: '/ai/index/upload',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        showLoader: false,
+        success: function (response) {
+            if (response.success) {
+                uploadedImageUrl = response.url;
+                setTimeout(function () {
+                    $('.working-content').hide();
+                    $('#uploaded-preview').attr('src', uploadedImageUrl);
+                    $('.add-cart').show();
+                }, 3000);
+            } else {
+                alert({content: 'Erro ao enviar imagem: ' + response.error});
+                resetPage();
+            }
+        },
+        error: function (xhr, status, error) {
+            alert({content: 'Erro na requisição: ' + error});
+            resetPage();
+        }
+    });
+});
+        });
+
+        function resetPage() {
+            $('#popup-working').fadeOut(0);
+            $('.working-content').show();
+            $('.button-container').show();
+            $('.page-title-wrapper').show();
+            $('.upload-container').show();
+            $('#thumbnail-container').show();
+
+            if (selectedStyle) {
+                $('.option-btn').removeClass('select-option');
+                $('.option-btn[data-role="' + selectedStyle + '"]').addClass('select-option');
+            }
+        
+            if (currentFile && !$('#thumbnail-preview').attr('src')) {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    $('#thumbnail-preview').attr('src', event.target.result);
+                };
+                reader.readAsDataURL(currentFile);
+            }
+        }
+    };
+
+    
 });

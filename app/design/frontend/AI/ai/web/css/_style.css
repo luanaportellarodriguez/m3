@@ -10,7 +10,7 @@ body {
 }
 
 h1, .page-title {
-    font-weight: 600;
+    font-weight: 200;
     color: var(--black);
     text-align: center;
     font-size: 3.2rem;
@@ -37,6 +37,10 @@ h1, .page-title {
     height: 24px;
     display: inline-block;
     vertical-align: middle;
+}
+
+.minicart-wrapper .action.showcart.active{
+    display: flex;
 }
 
 .minicart-wrapper .action.showcart .text {
@@ -158,7 +162,7 @@ border: none;
 }
 
 .upload-btn:hover{
-    border: 1px solid #322d29;
+    border: 1px solid var(--black);
 }
 
 
@@ -235,6 +239,8 @@ border: none;
     margin-bottom: 32px;
     width: 320px;
     height: 40px;
+    position: absolute;
+    top: 228px;
    }
 
    .working-container p {
@@ -307,14 +313,25 @@ border: none;
         background-position: center;
         background-image: url('../images/add-cart.png');
         opacity: 1;
-        position: absolute;
-        top: 8px;
+        top: 345px;
         left: 408px;
         width: 50px;
         height: 50px;
         cursor: pointer;
         background-color: transparent;
         border: none;
+}
+
+.working-popup .preview-square .add-cart,
+.working-popup .preview-square .add-cart:hover,
+.working-popup .preview-square .add-cart:focus,
+.working-popup .preview-square .add-cart:focus-visible,
+.working-popup .preview-square .add-cart:active {
+    background: url('../images/add-cart.png') center/cover no-repeat !important;
+    background-color: transparent !important;
+    border: none;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .add-cart img {
@@ -336,4 +353,80 @@ border: none;
     .working-container p {
         font-size: 18px;
     }
+}
+
+.minicart-wrapper .action.showcart .counter.qty{
+    background: var(--black);
+    position: relative;
+    top: -18px;
+    left: -14px;
+    color: #f9f9f9;
+    border-radius: 20px;
+    border: 6px solid #f9f9f9;
+}
+
+.delete-draw, .delete-draw.active{
+    position: absolute;
+    inset: 0;
+    background-image: url('../images/delete.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+    top: -14px;
+    left: 384px;
+    width: 20px;
+    height: 30px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    z-index: 10;
+}
+
+.working-popup .preview-square .delete-draw,
+.working-popup .preview-square .delete-draw:hover,
+.working-popup .preview-square .delete-draw:focus,
+.working-popup .preview-square .delete-draw:active {
+    background-color: transparent !important;
+    background-image: url('../images/delete.png') !important;
+    background-size: cover;
+    background-position: center;
+    border: none;
+    box-shadow: none !important;
+    outline: none;
+}
+
+.refresh-draw,
+.refresh-draw:hover,
+.refresh-draw.active {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../images/refresh.png');
+    opacity: 1;
+    top: 287px;
+    left: 408px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.refresh-draw img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+}
+
+.working-popup .preview-square .refresh-draw,
+.working-popup .preview-square .refresh-draw:hover,
+.working-popup .preview-square .refresh-draw:focus,
+.working-popup .preview-square .refresh-draw:focus-visible,
+.working-popup .preview-square .refresh-draw:active {
+    background: url('../images/refresh.png') center/cover no-repeat !important;
+    background-color: transparent !important;
+    border: none;
+    box-shadow: none !important;
+    outline: none !important;
 }

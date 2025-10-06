@@ -557,6 +557,7 @@ return [
         'Magento_WishlistGiftCard' => 1,
         'Magento_WishlistGiftCardGraphQl' => 1,
         'Magento_GiftCardGraphQl' => 1,
+        'AI_ai' => 1,
         'Fastly_Cdn' => 1,
         'Ho_Templatehints' => 1,
         'PayPal_Braintree' => 1,
