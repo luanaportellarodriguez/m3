@@ -7,8 +7,8 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
         var uploadedImageUrl = null;
 
         $(document).ready(function () {
-            
-            // Captura o estilo selecionado
+
+            // Seleção do estilo
             $(document).on('click', '.option-btn', function(e) {
                 if ($(e.target).hasClass('status-icon')) {
                     $(this).removeClass('select-option');
@@ -36,8 +36,7 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                     return;
                 }
 
-                var maxSize = 5 * 1024 * 1024;
-                if (file.size > maxSize) {
+                if (file.size > 5 * 1024 * 1024) {
                     alert({content: 'O arquivo deve ter no máximo 5MB'});
                     $(this).val('');
                     return;
@@ -53,6 +52,7 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                 reader.readAsDataURL(file);
             });
 
+            // Deletar thumbnail
             $(document).on('click', '.delete-thumbnail', function () {
                 $('#thumbnail-container').fadeOut(0);
                 $('#thumbnail-preview').attr('src', '');
@@ -60,76 +60,43 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                 currentFile = null;
             });
 
-            // ENVIAR
-            $('.send-btn').on('click', function () {
-                if (!currentFile) {
-                    alert({content: 'Por favor, selecione uma imagem primeiro'});
-                    return;
-                }
+            // ENVIAR (mock)
+// ENVIAR (mock)
+$('.send-btn, .refresh-draw').on('click', function () {
+    if (!currentFile) {
+        alert({content: 'Por favor, selecione uma imagem primeiro'});
+        return;
+    }
 
-                if (!selectedStyle) {
-                    alert({content: 'Por favor, selecione um estilo artístico'});
-                    return;
-                }
+    if (!selectedStyle) {
+        alert({content: 'Por favor, selecione um estilo artístico'});
+        return;
+    }
 
-                if (!['image/png', 'image/jpeg'].includes(currentFile.type)) {
-                    alert({content: 'Tipo de arquivo inválido'});
-                    return;
-                }
+    // Esconde elementos visuais e mostra popup
+    $('.button-container, .page-title-wrapper, .upload-container, #thumbnail-container').hide();
+    $('#popup-working').fadeIn(300);
 
-                if (currentFile.size > 5 * 1024 * 1024) {
-                    alert({content: 'Arquivo muito grande'});
-                    return;
-                }
+    // Define caminho base
+    var baseImageUrl = '/media/customer_uploads/';
+    uploadedImageUrl = baseImageUrl + 'dog-small-' + selectedStyle + '.jpg';
 
-                // Esconde elementos
-                $('.button-container').hide();
-                $('.page-title-wrapper').hide();
-                $('#thumbnail-container').hide();
-                $('.upload-container').hide();
+    // Define a imagem imediatamente com blur
+    $('#uploaded-preview')
+        .attr('src', uploadedImageUrl)
+        .css('filter', 'blur(8px)') // aplica blur mais forte
+        .show();
 
-                // Mostra loading
-                var reader = new FileReader();
-                reader.onload = function (event) {
-                    $('#uploaded-preview').attr('src', event.target.result);
-                    $('#popup-working').fadeIn(300);
-                };
-                reader.readAsDataURL(currentFile);
+    // Simula "upload + IA" com delay
+    setTimeout(function() {
+        // Remove blur depois de "processar"
+        $('#uploaded-preview').css('filter', 'none');
 
-                // AJAX Upload
-                var formData = new FormData();
-                formData.append('image', currentFile);
-                formData.append('style', selectedStyle);
+        $('.working-content').hide();
+        $('.add-cart').fadeIn(300);
+    }, 1500);
+});
 
-                $.ajax({
-                    url: '/ai/index/upload',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    showLoader: false,
-                    success: function(response) {
-                        if (response.success) {
-                            uploadedImageUrl = response.url;
-                            
-                            // Simula processamento da IA (substitua pela chamada real)
-                            setTimeout(function() {
-                                $('.working-content').hide();
-                                $('#uploaded-preview').attr('src', uploadedImageUrl);
-                                $('.add-cart').show();
-                            }, 3000);
-                            
-                        } else {
-                            alert({content: 'Erro ao enviar imagem: ' + response.error});
-                            resetPage();
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert({content: 'Erro na requisição: ' + error});
-                        resetPage();
-                    }
-                });
-            });
 
             // ADICIONAR AO CARRINHO
             $(document).on('click', '.add-cart', function() {
@@ -147,14 +114,14 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
 
                 var productSku = skuMap[selectedStyle];
 
-                // Adiciona ao carrinho via AJAX
                 $.ajax({
                     url: '/ai/cart/add',
                     type: 'POST',
                     data: {
                         sku: productSku,
                         image_url: uploadedImageUrl,
-                        style: selectedStyle
+                        style: selectedStyle,
+                        form_key: $.mage.cookies.get('form_key') // ← importante!
                     },
                     showLoader: true,
                     success: function(response) {
@@ -163,7 +130,6 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                                 content: response.message,
                                 actions: {
                                     always: function() {
-                                        // Recarrega a página ou redireciona para o carrinho
                                         window.location.href = '/checkout/cart';
                                     }
                                 }
@@ -176,82 +142,31 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                         alert({content: 'Erro ao adicionar ao carrinho'});
                     }
                 });
+                
             });
 
-            
-$(document).on('click', '.delete-draw', function () {
-    resetPage();
-});
+            function resetPage() {
+                $('#popup-working').fadeOut(0);
+                $('.working-content').show();
+                $('.button-container, .page-title-wrapper, .upload-container, #thumbnail-container').show();
 
-$(document).on('click', '.refresh-draw', function () {
-    if (!currentFile || !selectedStyle) {
-        alert({content: 'Não há imagem para reenviar. Selecione uma nova arte.'});
-        return;
-    }
+                if (selectedStyle) {
+                    $('.option-btn').removeClass('select-option');
+                    $('.option-btn[data-role="' + selectedStyle + '"]').addClass('select-option');
+                }
 
-    $('.working-content').show();
-
-    var reader = new FileReader();
-    reader.onload = function (event) {
-        $('#uploaded-preview').attr('src', event.target.result);
-        $('#popup-working').fadeIn(300);
-    };
-    reader.readAsDataURL(currentFile);
-
-    var formData = new FormData();
-    formData.append('image', currentFile);
-    formData.append('style', selectedStyle);
-
-    $.ajax({
-        url: '/ai/index/upload',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        showLoader: false,
-        success: function (response) {
-            if (response.success) {
-                uploadedImageUrl = response.url;
-                setTimeout(function () {
-                    $('.working-content').hide();
-                    $('#uploaded-preview').attr('src', uploadedImageUrl);
-                    $('.add-cart').show();
-                }, 3000);
-            } else {
-                alert({content: 'Erro ao enviar imagem: ' + response.error});
-                resetPage();
+                if (currentFile) {
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        $('#thumbnail-preview').attr('src', event.target.result);
+                    };
+                    reader.readAsDataURL(currentFile);
+                }
             }
-        },
-        error: function (xhr, status, error) {
-            alert({content: 'Erro na requisição: ' + error});
-            resetPage();
-        }
-    });
-});
+
+            // Botão deletar draw
+            $(document).on('click', '.delete-draw', resetPage);
+
         });
-
-        function resetPage() {
-            $('#popup-working').fadeOut(0);
-            $('.working-content').show();
-            $('.button-container').show();
-            $('.page-title-wrapper').show();
-            $('.upload-container').show();
-            $('#thumbnail-container').show();
-
-            if (selectedStyle) {
-                $('.option-btn').removeClass('select-option');
-                $('.option-btn[data-role="' + selectedStyle + '"]').addClass('select-option');
-            }
-        
-            if (currentFile && !$('#thumbnail-preview').attr('src')) {
-                var reader = new FileReader();
-                reader.onload = function (event) {
-                    $('#thumbnail-preview').attr('src', event.target.result);
-                };
-                reader.readAsDataURL(currentFile);
-            }
-        }
     };
-
-    
 });

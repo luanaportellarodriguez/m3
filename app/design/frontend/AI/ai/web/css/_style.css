@@ -430,3 +430,28 @@ object-fit: contain;
     box-shadow: none !important;
     outline: none !important;
 }
+.modal-header .modal-title, footer .modal-footer, .modal-popup .action-close:before{
+    display: none;
+}
+
+.modal-header .action-close{
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../images/delete.png');
+    opacity: 1;
+    position: absolute;
+    top: -27px;
+    left: 473px;
+    width: 20px;
+    height: 30px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+#modal-content-9 .modal-content{
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}

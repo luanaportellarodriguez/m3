@@ -20,8 +20,9 @@
         }
     },
     "require": {
-        "magento/magento-cloud-metapackage": ">=2.4.6 <2.4.7",
-        "magento/composer-root-update-plugin": "^2.0.3"
+        "guzzlehttp/guzzle": "^7.8",
+        "magento/composer-root-update-plugin": "^2.0.3",
+        "magento/magento-cloud-metapackage": ">=2.4.6 <2.4.7"
     },
     "suggest": {
         "ext-pcntl": "Need for run processes in parallel mode"
