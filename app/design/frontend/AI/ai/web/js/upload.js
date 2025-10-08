@@ -1,6 +1,12 @@
-define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
+define([
+    'jquery',
+    'Magento_Ui/js/modal/alert',
+    'Magento_Customer/js/customer-data'  // Adicione esta linha
+], function ($, alert, customerData) {    // E adicione o parâmetro customerData aqui
     'use strict';
 
+    window.customerData = customerData;
+    
     return function () {
         var currentFile = null;
         var selectedStyle = null;
@@ -154,13 +160,20 @@ $(document).on('click', '.refresh-draw', function() {
                     showLoader: true,
                     success: function(response) {
                         if (response.success) {
+                            // Atualiza o contador do carrinho
+                            if (typeof window.checkout !== 'undefined' && 
+                                typeof window.checkout.cart !== 'undefined' &&
+                                typeof window.checkout.cart.customerData !== 'undefined') {
+                                window.checkout.cart.customerData.reload(['cart']);
+                            }
+                            
+                            // Atualiza o contador do minicarrinho
+                            if (typeof window.customerData !== 'undefined') {
+                                window.customerData.reload(['cart'], true);
+                            }
+                            
                             alert({
                                 content: response.message,
-                                actions: {
-                                    always: function() {
-                                        window.location.href = '/checkout/cart';
-                                    }
-                                }
                             });
                         } else {
                             alert({content: 'Erro: ' + response.error});
