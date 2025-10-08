@@ -451,6 +451,18 @@ object-fit: contain;
     border: none;
 }
 
+.modal-header .action-close,
+.modal-header .action-close:hover,
+.modal-header .action-close:focus,
+.modal-header .action-close:focus-visible,
+.modal-header .action-close:active {
+    background: url('../images/delete.png') center/cover no-repeat !important;
+    background-color: transparent !important;
+    border: none;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
 #modal-content-9 .modal-content{
     padding-top: 3rem;
     padding-bottom: 3rem;
