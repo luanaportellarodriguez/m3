@@ -60,9 +60,8 @@ define(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                 currentFile = null;
             });
 
-            // ENVIAR (mock)
 // ENVIAR (mock)
-$('.send-btn, .refresh-draw').on('click', function () {
+$('.send-btn').on('click', function () {
     if (!currentFile) {
         alert({content: 'Por favor, selecione uma imagem primeiro'});
         return;
@@ -73,28 +72,57 @@ $('.send-btn, .refresh-draw').on('click', function () {
         return;
     }
 
-    // Esconde elementos visuais e mostra popup
-    $('.button-container, .page-title-wrapper, .upload-container, #thumbnail-container').hide();
-    $('#popup-working').fadeIn(300);
-
     // Define caminho base
     var baseImageUrl = '/media/customer_uploads/';
     uploadedImageUrl = baseImageUrl + 'dog-small-' + selectedStyle + '.jpg';
 
+    // Inicia o processamento da imagem
+    processImage();
+});
+
+// Função para processar a imagem
+function processImage() {
+    // Desabilita os botões
+    $('.add-cart, .refresh-draw').prop('disabled', true).css('opacity', '0.5');
+    
+    // Mostra o popup e o conteúdo de trabalho
+    $('.button-container, .page-title-wrapper, .upload-container, #thumbnail-container').hide();
+    $('#popup-working').fadeIn(300);
+    $('.working-content').show();
+
+    // Remove qualquer overlay existente
+    $('.image-reveal-overlay').remove();
+    $('.image-reveal-container').contents().unwrap();
+
     // Define a imagem imediatamente com blur
-    $('#uploaded-preview')
+    var $preview = $('#uploaded-preview')
         .attr('src', uploadedImageUrl)
-        .css('filter', 'blur(8px)') // aplica blur mais forte
-        .show();
+        .css('filter', 'blur(8px)')
+        .wrap('<div class="image-reveal-container"></div>');
+
+    // Adiciona o overlay de revelação
+    $preview.after('<div class="image-reveal-overlay"></div>');
 
     // Simula "upload + IA" com delay
     setTimeout(function() {
-        // Remove blur depois de "processar"
-        $('#uploaded-preview').css('filter', 'none');
-
+        $preview.css('filter', 'none');
         $('.working-content').hide();
         $('.add-cart').fadeIn(300);
-    }, 1500);
+        
+        // Habilita os botões novamente
+        $('.add-cart, .refresh-draw').prop('disabled', false).css('opacity', '1');
+        
+        // Remove o overlay após a animação terminar
+        setTimeout(function() {
+            $preview.unwrap().next('.image-reveal-overlay').remove();
+        }, 1500);
+    }, 3000);
+}
+
+// Evento para o botão de refresh
+$(document).on('click', '.refresh-draw', function() {
+    if (!uploadedImageUrl) return;
+    processImage();
 });
 
 
