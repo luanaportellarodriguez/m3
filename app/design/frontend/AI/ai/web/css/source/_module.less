@@ -1,0 +1,58 @@
+//
+//  Store Pickup Widget
+//  _____________________________________________
+
+.store-pickup-widget {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+    background: #f8f8f8;
+
+    .store-pickup-title {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e1e1e1;
+        
+        h3 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: #333;
+        }
+    }
+
+    .store-option {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: #fff;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            border-color: #1979c3;
+            box-shadow: 0 0 0 1px #1979c3;
+        }
+        
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .store-address {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 1.3rem;
+        }
+    }
+    
+    .message.success {
+        background: #e5efe5;
+        border: 1px solid #008000;
+        color: #008000;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        font-size: 1.3rem;
+    }
+}

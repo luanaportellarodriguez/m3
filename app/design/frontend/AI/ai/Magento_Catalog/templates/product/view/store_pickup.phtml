@@ -1,0 +1,57 @@
+<?php
+/**
+ * @var $block \Magento\Framework\View\Element\Template
+ */
+?>
+<div class="store-pickup-widget">
+    <div class="store-pickup-title">
+        <h3><?= $block->escapeHtml(__('Retirar em loja')) ?></h3>
+    </div>
+    <div class="store-pickup-options">
+        <?php
+        $stores = [
+            [
+                'id' => 'store-1',
+                'name' => 'Loja Centro',
+                'address' => 'Av. Paulista, 1000 - São Paulo/SP'
+            ],
+            [
+                'id' => 'store-2',
+                'name' => 'Loja Zona Sul',
+                'address' => 'Av. Faria Lima, 2000 - São Paulo/SP'
+            ],
+            [
+                'id' => 'store-3',
+                'name' => 'Loja Zona Norte',
+                'address' => 'Av. Brasil, 3000 - São Paulo/SP'
+            ]
+        ];
+        
+        $selectedStore = isset($_COOKIE['selected_store']) ? $_COOKIE['selected_store'] : '';
+        ?>
+        
+        <?php foreach ($stores as $store): ?>
+            <div class="store-option">
+                <input type="radio" 
+                       id="<?= $block->escapeHtmlAttr($store['id']) ?>" 
+                       name="store_pickup" 
+                       value="<?= $block->escapeHtmlAttr($store['id']) ?>"
+                       class="store-radio"
+                       data-store='<?= $block->escapeHtmlAttr(json_encode($store)) ?>'
+                       <?= ($selectedStore === $store['id']) ? 'checked' : '' ?>>
+                <label for="<?= $block->escapeHtmlAttr($store['id']) ?>">
+                    <strong><?= $block->escapeHtml($store['name']) ?></strong><br>
+                    <span class="store-address"><?= $block->escapeHtml($store['address']) ?></span>
+                </label>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<script type="text/x-magento-init">
+{
+    "*": {
+        "storePickup": {}
+    }
+}
+</script>
