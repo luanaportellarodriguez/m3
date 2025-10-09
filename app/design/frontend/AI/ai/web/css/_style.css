@@ -18,10 +18,6 @@ h1, .page-title {
     font-size: 3.2rem;
 }
 
-p, a {
-    color: var(--black)!important;
-}
-
 #maincontent{
     height: 90vh;
     align-content: center;
@@ -584,6 +580,11 @@ border: none;
     color: var(--black);
   }
 
+li .product .product-item-details .product-item-name a, a:visited, .alink:visited{
+color: var(--black);
+  }
+
+
   .product-item-details .action.delete:before{
   content: '';
   background-image: url('../images/trash.png');
@@ -630,4 +631,4 @@ margin: 0;
     background-color: var(--black-hover);
     border-radius: 3px;
     border: none;
-  }
+}
