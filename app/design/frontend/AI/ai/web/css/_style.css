@@ -601,7 +601,7 @@ li .product .product-item-details .product-item-name a, a:visited, .alink:visite
 color: var(--black);
   }
 
-
+  .cart.table-wrapper .actions-toolbar>.action-delete:before,
   .product-item-details .action.delete:before{
   content: '';
   background-image: url('../images/trash.png');
@@ -614,6 +614,7 @@ color: var(--black);
   vertical-align: middle;
   }
 
+  .cart.table-wrapper .actions-toolbar>.action-edit:before,
   .product-item-details .action.edit:before{
   content: '';
   background-image: url('../images/edit.png');
@@ -662,4 +663,21 @@ margin: 0;
     border-radius: 4px;
     cursor: pointer;
     padding: 4px;
+}
+
+.cart .update {
+    background: transparent;
+    border: none;
+    color: var(--black);
+    text-decoration: underline;
+padding: 0;
+font-weight: 400;
+}
+
+.cart .update:hover {
+    background: transparent;
+    border: none;
+}
+#gift-options-cart, .cart-discount{
+    display: none;
 }
