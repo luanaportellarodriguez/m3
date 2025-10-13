@@ -6,8 +6,10 @@ $_item = $block->getItem();
 $product = $_item->getProduct();
 $isVisibleProduct = $product->isVisibleInSiteVisibility();
 
-// Busca a imagem processada
+// Busca as imagens (original e processada)
 $processedImageUrl = null;
+$originalImageUrl = null;
+
 try {
     if ($_item->getOptionByCode('option_ids')) {
         $optionIds = explode(',', $_item->getOptionByCode('option_ids')->getValue());
@@ -15,9 +17,13 @@ try {
             $option = $_item->getOptionByCode('option_' . $optionId);
             if ($option) {
                 $optionConfig = $product->getOptionById($optionId);
-                if ($optionConfig && stripos($optionConfig->getTitle(), 'processada') !== false) {
-                    $processedImageUrl = $option->getValue();
-                    break;
+                if ($optionConfig) {
+                    $title = strtolower($optionConfig->getTitle());
+                    if (stripos($title, 'processada') !== false) {
+                        $processedImageUrl = $option->getValue();
+                    } elseif (stripos($title, 'original') !== false) {
+                        $originalImageUrl = $option->getValue();
+                    }
                 }
             }
         }
@@ -69,20 +75,19 @@ try {
                     <?php endif; ?>
                 </strong>
                 
-                <?php if ($_options = $block->getOptionList()): ?>
+                <?php if ($originalImageUrl): ?>
                 <dl class="item-options">
-                    <?php foreach ($_options as $_option): ?>
-                    <dt><?= $block->escapeHtml($_option['label']) ?></dt>
+                    <dt><?= $block->escapeHtml(__('Imagem Original')) ?></dt>
                     <dd>
-                        <?php if (filter_var($_option['value'], FILTER_VALIDATE_URL)): ?>
-                            <a href="<?= $block->escapeUrl($_option['value']) ?>" target="_blank">
-                                Ver imagem
-                            </a>
-                        <?php else: ?>
-                            <?= $block->escapeHtml($_option['value']) ?>
-                        <?php endif; ?>
+                        <a href="<?= $block->escapeUrl($originalImageUrl) ?>" 
+                           target="_blank" 
+                           class="original-image-link"
+                           title="<?= $block->escapeHtml(__('Clique para ver em tamanho maior')) ?>">
+                            <img src="<?= $block->escapeUrl($originalImageUrl) ?>" 
+                                 alt="<?= $block->escapeHtml(__('Imagem Original')) ?>"
+                                 loading="lazy"/>
+                        </a>
                     </dd>
-                    <?php endforeach; ?>
                 </dl>
                 <?php endif; ?>
             </div>

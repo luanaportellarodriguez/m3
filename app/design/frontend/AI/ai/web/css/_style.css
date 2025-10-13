@@ -191,10 +191,10 @@ border: none;
     position: relative;
     display: inline-block;
     border: 2px solid #e0e0e0;
+    padding: 4px;
     border-radius: 8px;
     overflow: hidden;
     background: #fff;
-    padding: 4px;
 }
 
 #thumbnail-preview {
@@ -648,4 +648,18 @@ margin: 0;
     background-color: var(--black-hover);
     border-radius: 3px;
     border: none;
+}
+
+.product-item-details .item-options{
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.original-image-link img{
+    max-width: 80px;
+    max-height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 4px;
 }
