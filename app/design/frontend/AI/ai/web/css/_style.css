@@ -14,8 +14,11 @@ body {
 h1, .page-title {
     font-weight: 200;
     color: var(--black);
-    text-align: center;
     font-size: 3.2rem;
+}
+
+.text-center{
+text-align: center;
 }
 
 #maincontent{

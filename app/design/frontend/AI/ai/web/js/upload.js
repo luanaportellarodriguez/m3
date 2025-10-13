@@ -1,8 +1,8 @@
 define([
     'jquery',
     'Magento_Ui/js/modal/alert',
-    'Magento_Customer/js/customer-data'  // Adicione esta linha
-], function ($, alert, customerData) {    // E adicione o parâmetro customerData aqui
+    'Magento_Customer/js/customer-data'
+], function ($, alert, customerData) {
     'use strict';
 
     window.customerData = customerData;
@@ -11,6 +11,7 @@ define([
         var currentFile = null;
         var selectedStyle = null;
         var uploadedImageUrl = null;
+        var originalImageUrl = null;
 
         $(document).ready(function () {
 
@@ -52,8 +53,32 @@ define([
 
                 var reader = new FileReader();
                 reader.onload = function (event) {
-                    $('#thumbnail-preview').attr('src', event.target.result);
+                    var base64Image = event.target.result;
+                    
+                    // Mostra preview imediatamente
+                    $('#thumbnail-preview').attr('src', base64Image);
                     $('#thumbnail-container').fadeIn(300);
+                    
+                    // Faz upload em background
+                    $.ajax({
+                        url: '/ai/image/upload',
+                        type: 'POST',
+                        data: {
+                            image_data: base64Image,
+                            form_key: $.mage.cookies.get('form_key')
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                originalImageUrl = response.url;
+                                console.log('Upload concluído:', originalImageUrl);
+                            } else {
+                                alert({content: 'Erro ao fazer upload: ' + response.error});
+                            }
+                        },
+                        error: function() {
+                            alert({content: 'Erro ao fazer upload da imagem'});
+                        }
+                    });
                 };
                 reader.readAsDataURL(file);
             });
@@ -64,127 +89,138 @@ define([
                 $('#thumbnail-preview').attr('src', '');
                 $('#upload-input').val('');
                 currentFile = null;
+                originalImageUrl = null;
             });
 
-// ENVIAR (mock)
-$('.send-btn').on('click', function () {
-    if (!currentFile) {
-        alert({content: 'Por favor, selecione uma imagem primeiro'});
-        return;
-    }
-
-    if (!selectedStyle) {
-        alert({content: 'Por favor, selecione um estilo artístico'});
-        return;
-    }
-
-    // Define caminho base
-    var baseImageUrl = '/media/customer_uploads/';
-    uploadedImageUrl = baseImageUrl + 'dog-small-' + selectedStyle + '.jpg';
-
-    // Inicia o processamento da imagem
-    processImage();
-});
-
-// Função para processar a imagem
-function processImage() {
-    // Desabilita os botões
-    $('.add-cart, .refresh-draw').prop('disabled', true).css('opacity', '0.5');
-    
-    // Mostra o popup e o conteúdo de trabalho
-    $('.button-container, .page-title-wrapper, .upload-container, #thumbnail-container').hide();
-    $('#popup-working').fadeIn(300);
-    $('.working-content').show();
-
-    // Remove qualquer overlay existente
-    $('.image-reveal-overlay').remove();
-    $('.image-reveal-container').contents().unwrap();
-
-    // Define a imagem imediatamente com blur
-    var $preview = $('#uploaded-preview')
-        .attr('src', uploadedImageUrl)
-        .css('filter', 'blur(8px)')
-        .wrap('<div class="image-reveal-container"></div>');
-
-    // Adiciona o overlay de revelação
-    $preview.after('<div class="image-reveal-overlay"></div>');
-
-    // Simula "upload + IA" com delay
-    setTimeout(function() {
-        $preview.css('filter', 'none');
-        $('.working-content').hide();
-        $('.add-cart').fadeIn(300);
-        
-        // Habilita os botões novamente
-        $('.add-cart, .refresh-draw').prop('disabled', false).css('opacity', '1');
-        
-        // Remove o overlay após a animação terminar
-        setTimeout(function() {
-            $preview.unwrap().next('.image-reveal-overlay').remove();
-        }, 1500);
-    }, 3000);
-}
-
-// Evento para o botão de refresh
-$(document).on('click', '.refresh-draw', function() {
-    if (!uploadedImageUrl) return;
-    processImage();
-});
-
-
-            // ADICIONAR AO CARRINHO
-            $(document).on('click', '.add-cart', function() {
-                if (!uploadedImageUrl || !selectedStyle) {
-                    alert({content: 'Dados incompletos'});
+            // ENVIAR (mock)
+            $('.send-btn').on('click', function () {
+                if (!currentFile) {
+                    alert({content: 'Por favor, selecione uma imagem primeiro'});
                     return;
                 }
 
-                var skuMap = {
-                    '3d': 'redraw-3d',
-                    'fotorrealista': 'redraw-fotorrealista',
-                    'aquarela': 'redraw-aquarela',
-                    'anime': 'redraw-anime'
-                };
+                if (!selectedStyle) {
+                    alert({content: 'Por favor, selecione um estilo artístico'});
+                    return;
+                }
 
-                var productSku = skuMap[selectedStyle];
+                // Define caminho base
+                var baseImageUrl = '/media/customer_uploads/';
+                uploadedImageUrl = baseImageUrl + 'dog-small-' + selectedStyle + '.jpg';
 
-                $.ajax({
-                    url: '/ai/cart/add',
-                    type: 'POST',
-                    data: {
-                        sku: productSku,
-                        image_url: uploadedImageUrl,
-                        style: selectedStyle,
-                        form_key: $.mage.cookies.get('form_key') // ← importante!
-                    },
-                    showLoader: true,
-                    success: function(response) {
-                        if (response.success) {
-                            // Atualiza o contador do carrinho
-                            if (typeof window.checkout !== 'undefined' && 
-                                typeof window.checkout.cart !== 'undefined' &&
-                                typeof window.checkout.cart.customerData !== 'undefined') {
-                                window.checkout.cart.customerData.reload(['cart']);
-                            }
-                            
-                            // Atualiza o contador do minicarrinho
-                            if (typeof window.customerData !== 'undefined') {
-                                window.customerData.reload(['cart'], true);
-                            }
-                            
-                            alert({
-                                content: response.message,
-                            });
-                        } else {
-                            alert({content: 'Erro: ' + response.error});
-                        }
-                    },
-                    error: function() {
-                        alert({content: 'Erro ao adicionar ao carrinho'});
-                    }
-                });
-                
+                // Inicia o processamento da imagem
+                processImage();
             });
+
+            // Função para processar a imagem
+            function processImage() {
+                // Desabilita os botões
+                $('.add-cart, .refresh-draw').prop('disabled', true).css('opacity', '0.5');
+                
+                // Mostra o popup e o conteúdo de trabalho
+                $('.button-container, .page-title-wrapper, .upload-container, #thumbnail-container').hide();
+                $('#popup-working').fadeIn(300);
+                $('.working-content').show();
+
+                // Remove qualquer overlay existente
+                $('.image-reveal-overlay').remove();
+                $('.image-reveal-container').contents().unwrap();
+
+                // Define a imagem imediatamente com blur
+                var $preview = $('#uploaded-preview')
+                    .attr('src', uploadedImageUrl)
+                    .css('filter', 'blur(8px)')
+                    .wrap('<div class="image-reveal-container"></div>');
+
+                // Adiciona o overlay de revelação
+                $preview.after('<div class="image-reveal-overlay"></div>');
+
+                // Simula "upload + IA" com delay
+                setTimeout(function() {
+                    $preview.css('filter', 'none');
+                    $('.working-content').hide();
+                    $('.add-cart').fadeIn(300);
+                    
+                    // Habilita os botões novamente
+                    $('.add-cart, .refresh-draw').prop('disabled', false).css('opacity', '1');
+                    
+                    // Remove o overlay após a animação terminar
+                    setTimeout(function() {
+                        $preview.unwrap().next('.image-reveal-overlay').remove();
+                    }, 1500);
+                }, 3000);
+            }
+
+            // Evento para o botão de refresh
+            $(document).on('click', '.refresh-draw', function() {
+                if (!uploadedImageUrl) return;
+                processImage();
+            });
+
+// ADICIONAR AO CARRINHO
+$(document).on('click', '.add-cart', function() {
+    if (!uploadedImageUrl || !selectedStyle || !originalImageUrl) {
+        alert({content: 'Dados incompletos'});
+        return;
+    }
+
+    var skuMap = {
+        '3d': 'redraw-3d',
+        'fotorrealista': 'redraw-fotorrealista',
+        'aquarela': 'redraw-aquarela',
+        'anime': 'redraw-anime'
+    };
+
+    var productSku = skuMap[selectedStyle];
+
+    console.log('=== ENVIANDO PARA CARRINHO ===');
+    console.log('SKU:', productSku);
+
+    // Mostra loader
+    $('body').trigger('processStart');
+
+    $.ajax({
+        url: '/ai/cart/add',
+        type: 'POST',
+        data: {
+            sku: productSku,
+            image_url: uploadedImageUrl,
+            original_image: originalImageUrl,
+            style: selectedStyle,
+            form_key: $.mage.cookies.get('form_key')
+        },
+        success: function(response) {
+            $('body').trigger('processStop');
+            
+            console.log('=== RESPOSTA DO SERVIDOR ===');
+            console.log('Resposta completa:', response);
+            
+            if (response.success) {
+                console.log('✅ Sucesso! Forçando reload do carrinho...');
+                
+                // Força reload completo da página do carrinho
+                // Isso garante que tudo seja atualizado corretamente
+                window.location.href = '/checkout/cart?reload=' + Date.now();
+            } else {
+                console.error('❌ Erro retornado:', response.error);
+                alert({
+                    content: 'Erro: ' + (response.error || 'Erro desconhecido')
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            $('body').trigger('processStop');
+            
+            console.error('=== ERRO AJAX ===');
+            console.error('Status:', status);
+            console.error('Response Text:', xhr.responseText);
+            
+            alert({
+                content: 'Erro ao adicionar ao carrinho. Status: ' + xhr.status
+            });
+        }
+    });
+});
 
             function resetPage() {
                 $('#popup-working').fadeOut(0);
@@ -196,12 +232,8 @@ $(document).on('click', '.refresh-draw', function() {
                     $('.option-btn[data-role="' + selectedStyle + '"]').addClass('select-option');
                 }
 
-                if (currentFile) {
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        $('#thumbnail-preview').attr('src', event.target.result);
-                    };
-                    reader.readAsDataURL(currentFile);
+                if (originalImageUrl) {
+                    $('#thumbnail-preview').attr('src', originalImageUrl);
                 }
             }
 
