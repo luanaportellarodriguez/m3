@@ -636,6 +636,7 @@ color: var(--black);
       border-radius: 2px;
   }
 
+  .action-primary,
   .action.primary{
     background-color: var(--black);
     border: none;
@@ -647,7 +648,8 @@ color: var(--black);
 margin: 0;
   }
 
-  .action.primary:hover{
+  .action-primary:hover, .action-primary:focus, .action-primary:active,
+  .action.primary:hover, .action.primary:focus, .action.primary:active{
     background-color: var(--black-hover);
     border-radius: 3px;
     border: none;
@@ -860,8 +862,8 @@ height: auto;
     color: var(--black) !important;
 }
 
-.header .links .link .authorization-link{
-font-weight: 600;
+.header.panel>.header.links>.authorization-link>a{
+font-weight: 700 !important;
 }
 
 .page-header .panel.wrapper{
