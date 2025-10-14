@@ -38,6 +38,7 @@ define([
                            '</div>');
             
             $('.store-pickup-widget').prepend(message);
+            $(document).trigger('storePickupChanged');
             
             // Remove message after 3 seconds
             setTimeout(function() {

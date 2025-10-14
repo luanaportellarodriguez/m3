@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    
+    <!-- Save checkout notes -->
+    <route url="/V1/checkout/notes" method="POST">
+        <service class="AI\ai\Api\CheckoutNotesInterface" method="save"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    
+    <!-- Get checkout notes -->
+    <route url="/V1/checkout/notes" method="GET">
+        <service class="AI\ai\Api\CheckoutNotesInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    
+    <!-- Delete checkout notes -->
+    <route url="/V1/checkout/notes" method="DELETE">
+        <service class="AI\ai\Api\CheckoutNotesInterface" method="delete"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    
+</routes>

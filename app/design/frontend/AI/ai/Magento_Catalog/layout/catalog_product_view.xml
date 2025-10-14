@@ -4,5 +4,11 @@
         <referenceContainer name="product.info.form.content">
             <block class="Magento\Framework\View\Element\Template" name="store.pickup" template="Magento_Catalog::product/view/store_pickup.phtml" after="product.info.addtocart" />
         </referenceContainer>
+        <referenceContainer name="product.info.main">
+    <block class="Magento\Framework\View\Element\Template" 
+           name="store.pickup" 
+           template="Magento_Catalog::product/view/store_pickup.phtml" 
+           after="product.info.main" />
+</referenceContainer>
     </body>
 </page>

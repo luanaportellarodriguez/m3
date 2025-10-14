@@ -1,0 +1,68 @@
+<?php
+/**
+ * Delivery Notes Widget for Checkout
+ */
+?>
+<div class="delivery-notes-widget" id="delivery-notes-container">
+    <div class="delivery-notes-header">
+        <h3><?= $block->escapeHtml(__('Observações de Entrega')) ?></h3>
+    </div>
+    
+    <div class="delivery-notes-content">
+        <!-- Display saved notes -->
+        <div class="saved-notes" id="saved-notes-display" style="display: none;">
+            <div class="notes-display-box">
+                <div class="notes-text" id="notes-text-display"></div>
+                <div class="notes-pickup" id="notes-pickup-display"></div>
+            </div>
+            <div class="notes-actions">
+                <button type="button" class="action primary" id="edit-notes-btn">
+                    <?= $block->escapeHtml(__('Editar')) ?>
+                </button>
+                <button type="button" class="action secondary" id="delete-notes-btn">
+                    <?= $block->escapeHtml(__('Excluir')) ?>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Form to add/edit notes -->
+        <div class="notes-form" id="notes-form-container">
+            <div class="field note">
+                <label class="label" for="delivery-notes">
+                    <span><?= $block->escapeHtml(__('Suas observações')) ?></span>
+                </label>
+                <div class="control">
+                    <textarea id="delivery-notes" 
+                              name="delivery_notes" 
+                              class="input-text" 
+                              rows="4" 
+                              placeholder="<?= $block->escapeHtmlAttr(__('Ex: Entregar após às 18h, tocar a campainha 2 vezes...')) ?>"></textarea>
+                </div>
+            </div>
+            
+            <div class="pickup-point-info" id="pickup-point-info">
+                <strong><?= $block->escapeHtml(__('Loja selecionada:')) ?></strong>
+                <span id="selected-store-name"><?= $block->escapeHtml(__('Nenhuma')) ?></span>
+            </div>
+            
+            <div class="notes-submit-actions">
+                <button type="button" class="action primary" id="save-notes-btn">
+                    <?= $block->escapeHtml(__('Salvar Observações')) ?>
+                </button>
+                <button type="button" class="action secondary" id="cancel-notes-btn" style="display: none;">
+                    <?= $block->escapeHtml(__('Cancelar')) ?>
+                </button>
+            </div>
+            
+            <div class="notes-message" id="notes-message" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-magento-init">
+{
+    "#delivery-notes-container": {
+        "deliveryNotes": {}
+    }
+}
+</script>
