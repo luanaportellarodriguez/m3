@@ -4,7 +4,7 @@
     --black: #322d29;
     --black-hover: #141210;
     --light: #f9f9f9;
-    --gray: #e0e0e0
+    --gray: #e0e0e0;
   }
 
 body {
@@ -848,4 +848,22 @@ height: auto;
 
 .cart.table-wrapper .product-image-wrapper .product-image-photo{
     border-radius: 4px;
+}
+
+.page-header .header.panel{
+    box-sizing: content-box !important;
+    background-color: #f5f5f5;
+    border: none;
+}
+
+.customer-welcome .action.switch:after, .header .links, .header .links>li>a{
+    color: var(--black) !important;
+}
+
+.header .links .link .authorization-link{
+font-weight: 600;
+}
+
+.page-header .panel.wrapper{
+    border-bottom: none !important;
 }
