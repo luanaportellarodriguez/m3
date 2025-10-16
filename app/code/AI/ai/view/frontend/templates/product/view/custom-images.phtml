@@ -1,0 +1,144 @@
+<?php
+/**
+ * @var $block \Magento\Framework\View\Element\Template
+ */
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$registry = $objectManager->get(\Magento\Framework\Registry::class);
+
+$processedImage = $registry->registry('custom_processed_image');
+$originalImage = $registry->registry('custom_original_image');
+$product = $registry->registry('current_product');
+
+if (!$processedImage || !$originalImage) {
+    echo $block->getLayout()
+        ->createBlock(\Magento\Catalog\Block\Product\View\Gallery::class)
+        ->setTemplate('Magento_Catalog::product/view/gallery.phtml')
+        ->toHtml();
+    return;
+}
+?>
+
+<!-- ADICIONE ESTES CAMPOS HIDDEN -->
+<input type="hidden" id="custom-processed-image" value="<?= $block->escapeHtmlAttr($processedImage) ?>"/>
+<input type="hidden" id="custom-original-image" value="<?= $block->escapeHtmlAttr($originalImage) ?>"/>
+
+<div class="product-custom-images">
+    <div class="product-image-container">
+        <!-- Imagem Principal (Processada) -->
+        <div class="main-image-wrapper">
+            <img id="main-product-image"
+                 class="product-image-photo"
+                 src="<?= $block->escapeUrl($processedImage) ?>"
+                 alt="<?= $block->escapeHtmlAttr($product->getName()) ?>"
+                 loading="lazy"/>
+        </div>
+        
+        <!-- Miniaturas -->
+        <div class="product-image-thumbs">
+            <div class="thumb-item active" data-image="<?= $block->escapeUrl($processedImage) ?>">
+                <img src="<?= $block->escapeUrl($processedImage) ?>" 
+                     alt="Imagem Processada"
+                     loading="lazy"/>
+                <span class="thumb-label">Processada</span>
+            </div>
+            <div class="thumb-item" data-image="<?= $block->escapeUrl($originalImage) ?>">
+                <img src="<?= $block->escapeUrl($originalImage) ?>" 
+                     alt="Imagem Original"
+                     loading="lazy"/>
+                <span class="thumb-label">Original</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+require(['jquery'], function($) {
+    $(document).ready(function() {
+        $('.thumb-item').on('click', function() {
+            var imageUrl = $(this).data('image');
+            
+            // Atualiza imagem principal
+            $('#main-product-image').attr('src', imageUrl);
+            
+            // Atualiza classe active
+            $('.thumb-item').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+});
+</script>
+
+<style>
+.product-custom-images {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.main-image-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: #f9f9f9;
+}
+
+.main-image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.product-image-thumbs {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.thumb-item {
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background: #fff;
+}
+
+.thumb-item:hover {
+    border-color: #1979c3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.thumb-item.active {
+    box-shadow: 0 6px 0 0 var(--gray);
+}
+
+.thumb-item img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.thumb-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
+.thumb-item.active .thumb-label {
+    color: var(--black);
+}
+
+#main-product-image{
+    position: relative;
+}
+</style>
+<script type="text/x-magento-init">
+{
+    "#product_addtocart_form": {
+        "customProductAddtocart": {}
+    }
+}
+</script>

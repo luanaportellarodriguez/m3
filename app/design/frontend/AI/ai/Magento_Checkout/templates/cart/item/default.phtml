@@ -36,8 +36,19 @@ try {
 <tbody class="cart item">
     <tr class="item-info">
         <td data-th="<?= $block->escapeHtml(__('Item')) ?>" class="col item">
-            <?php if ($isVisibleProduct): ?>
-            <a href="<?= $block->escapeUrl($block->getProductUrl()) ?>"
+          <?php 
+// Monta URL com parâmetros das imagens
+$productUrl = $block->getProductUrl();
+if ($processedImageUrl && $originalImageUrl) {
+    $productUrl = $block->getUrl('ai/product/view', [
+        'id' => $product->getId(),
+        'processed' => base64_encode($processedImageUrl),
+        'original' => base64_encode($originalImageUrl)
+    ]);
+}
+?>
+<?php if ($isVisibleProduct): ?>
+<a href="<?= $block->escapeUrl($productUrl) ?>"
                title="<?= $block->escapeHtml($block->getProductName()) ?>"
                tabindex="-1"
                class="product-item-photo">
@@ -66,8 +77,8 @@ try {
             
             <div class="product-item-details">
                 <strong class="product-item-name">
-                    <?php if ($isVisibleProduct): ?>
-                        <a href="<?= $block->escapeUrl($block->getProductUrl()) ?>">
+    <?php if ($isVisibleProduct): ?>
+        <a href="<?= $block->escapeUrl($productUrl) ?>">
                             <?= $block->escapeHtml($block->getProductName()) ?>
                         </a>
                     <?php else: ?>

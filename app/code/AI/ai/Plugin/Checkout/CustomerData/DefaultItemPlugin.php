@@ -2,11 +2,20 @@
 namespace AI\ai\Plugin\Checkout\CustomerData;
 
 use Magento\Checkout\CustomerData\DefaultItem;
+use Magento\Framework\UrlInterface;
 
 class DefaultItemPlugin
 {
+    protected $urlBuilder;
+
+    public function __construct(
+        UrlInterface $urlBuilder
+    ) {
+        $this->urlBuilder = $urlBuilder;
+    }
+
     /**
-     * Adiciona a URL da imagem processada aos dados do item
+     * Adiciona a URL da imagem processada e modifica o link do produto
      *
      * @param DefaultItem $subject
      * @param array $result
@@ -25,7 +34,10 @@ class DefaultItemPlugin
                 return $result;
             }
 
-            // Procura pela custom option "Imagem Processada"
+            $processedImageUrl = null;
+            $originalImageUrl = null;
+
+            // Procura pelas custom options
             if ($item->getOptionByCode('option_ids')) {
                 $product = $item->getProduct();
                 $optionIds = explode(',', $item->getOptionByCode('option_ids')->getValue());
@@ -34,13 +46,30 @@ class DefaultItemPlugin
                     $option = $item->getOptionByCode('option_' . $optionId);
                     if ($option) {
                         $optionConfig = $product->getOptionById($optionId);
-                        if ($optionConfig && stripos($optionConfig->getTitle(), 'processada') !== false) {
-                            // Substitui a imagem do produto pela processada
-                            $result['product_image']['src'] = $option->getValue();
-                            break;
+                        if ($optionConfig) {
+                            $title = strtolower($optionConfig->getTitle());
+                            
+                            if (stripos($title, 'processada') !== false) {
+                                $processedImageUrl = $option->getValue();
+                            } elseif (stripos($title, 'original') !== false) {
+                                $originalImageUrl = $option->getValue();
+                            }
                         }
                     }
                 }
+            }
+
+            // Se encontrou as imagens customizadas
+            if ($processedImageUrl && $originalImageUrl) {
+                // Substitui a imagem do produto pela processada
+                $result['product_image']['src'] = $processedImageUrl;
+                
+                // Modifica a URL do produto para incluir as imagens
+                $result['product_url'] = $this->urlBuilder->getUrl('ai/product/view', [
+                    'id' => $item->getProduct()->getId(),
+                    'processed' => base64_encode($processedImageUrl),
+                    'original' => base64_encode($originalImageUrl)
+                ]);
             }
         } catch (\Exception $e) {
             // Silenciosamente ignora erros para não quebrar o carrinho

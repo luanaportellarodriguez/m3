@@ -869,3 +869,6 @@ font-weight: 700 !important;
 .page-header .panel.wrapper{
     border-bottom: none !important;
 }
+.main .detailed{
+    display: none;
+}
