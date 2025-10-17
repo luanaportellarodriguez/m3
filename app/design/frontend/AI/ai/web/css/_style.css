@@ -4,7 +4,7 @@
     --black: #322d29;
     --black-hover: #141210;
     --light: #f9f9f9;
-    --gray: #e0e0e0;
+    --gray: #f5f5f5;
   }
 
 body {
@@ -854,7 +854,7 @@ height: auto;
 
 .page-header .header.panel{
     box-sizing: content-box !important;
-    background-color: #f5f5f5;
+    background-color:var(--gray);
     border: none;
 }
 
@@ -868,7 +868,16 @@ font-weight: 700 !important;
 
 .page-header .panel.wrapper{
     border-bottom: none !important;
+    background-color: var(--gray) !important;
 }
 .main .detailed{
     display: none;
 }
+
+/* /checkout/ */
+
+.opc-payment-additional{
+    display: none;
+}
+
+
