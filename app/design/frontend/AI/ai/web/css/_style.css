@@ -881,3 +881,9 @@ font-weight: 700 !important;
 }
 
 
+.header.panel>.header.links>li.welcome a{
+    color: var(--black) !important;
+}
+.not-logged-in{
+    display: none;
+}
