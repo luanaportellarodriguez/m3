@@ -1,97 +1,72 @@
-# Magento 2.4.6 Magento Commerce Cloud
+### **E-commerce de produtos criados por IA**
 
-#This repository contains a sample Magento Commerce (on-premise) version 2.4.6 instance for you to deploy in the cloud. You must have an active Magento Commerce Cloud user license to use the example in this repository.
+Um e-commerce onde o usuário envia uma imagem, escolhe um estilo artístico e a IA redesenha essa imagem nesse estilo. A IA gera a imagem, o usuário adiciona no carrinho e depois vai pros trâmites de checkout e finalização de compra.
 
-The example requires the use of [Composer](https://getcomposer.org/doc/) to load and manage dependencies and Magento vendor folders.
+### **Passo a passo do funcionamento**
 
--  [Authentication](#authentication)
-    -  [Authenticating in Docker](#authenticating-in-docker)
--  [Repository structure](#repository-structure)
--  [Developer documentation](#developer-documentation)
+##### 1. **Upload da Imagem**
 
-## Authentication
+Crie um formulário na página do produto:
 
-You must have an authentication key to access the Magento Commerce repository and to enable install and update commands for your Magento Commerce Cloud project. 
-The following method is best to prevent accidental exposure of credentials, such as pushing an `auth.json` file to a public repository. If you plan to use Docker for your local development, then jump to the [Authenticating in Docker](#authenticating-in-docker) section.
+-   Upload da foto.
+-   Seleção de estilo: 3D, Fotorrealista, Aquarela ou Anime.
 
-To add authentication keys using an environment variable:
+##### 2. **Envio para API de IA**
 
-1.  In the _Project Web UI_, click the configuration icon in the upper left corner.
+Quando o usuário clica no botão enviar:
 
-1.  In the _Configure Project_ view, click the **Variables** tab.
+-   A imagem e o prompt são enviados via **AJAX** para um endpoint customizado em Magento.
+    (Inicialmente era feito com ajax, mas por questões de custos/token, fiz um mock)
+-   Este endpoint usa a API da IA para gerar a imagem no estilo.
 
-1.  Click **Add Variable**.
+##### 3. **Renderização da imagem**
 
-1.  In the _Name_ field, enter `env:COMPOSER_AUTH`.
+Com a imagem estilizada recebida:
 
-1.  In the _Value_ field, add the following and replace `<public-key>` and `<private-key>` with your Magento Commerce Cloud authentication credentials.
+-   A imagem é renderizada na tela.
+-   O usuário tem como opção, adicionar ao carrinho, redesenhar ou descartar.
 
-    ```json
-    {
-       "http-basic": {
-          "repo.magento.com": {
-          "username": "<public-key>",
-          "password": "<private-key>"
-        }
-      }
-    }
-    ```
+### **Parte técnica**
 
-1.  Select **Visible during build** and deselect **Visible at run**.
+##### 1. **Tema**
 
-1.  Click **Add Variable**.
+-   Foi criado um tema com base no Luma, mas totalmente reformulado.
 
-See [Adding Magento authentication keys](https://devdocs.magento.com/cloud/setup/first-time-setup-import-prepare.html#auth-json).
+##### 2. **Módulos**
 
-### Authenticating in Docker
+-   Foram criados módulos, templates, controllers específicos para atender a personalização das funcionalidades.
 
-You must have an `auth.json` file that contains your Magento Commerce authorization credentials in your Magento Commerce Cloud root directory.
+##### 3. **PDP**
 
-1.  Using a text editor, create an `auth.json` file and save it in your Magento root directory.
+-   A página de produto apresenta a imagem original e a imagem estilizada.
+-   Por meio de um widget personalizado, o usuário tem a opção de retirar a arte impressa na loja.
 
-1.  Replace <public-key> and <private-key> with your Magento Commerce authentication credentials.
+---
 
-    ```json
-    {
-      "http-basic": {
-        "repo.magento.com": {
-          "username": "<public-key>",
-          "password": "<private-key>"
-        }
-      }
-    }
-    ```
+### **Imagens do Projeto**
 
-1.  Save your changes to `auth.json` file and exit the text editor.
+#### Página inicial
 
-To use Docker for local development, see [Launching a Docker configuration](https://devdocs.magento.com/cloud/docker/docker-config.html).
+![Página inicial](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/home.png)
 
-## Repository structure
+#### Carregando imagem
 
-The following is a list of the specific files required for this example to work in the Magento Commerce Cloud:
+![Carregando](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/uploading.png)
+![Carregada](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/uploaded.png)
 
-```bash
-.magento/
-        /routes.yaml
-        /services.yaml
-.magento.app.yaml
-auth.json
-composer.json
-magento-vars.php
-php.ini
-```
+#### Estilizando imagem
 
--  `.magento/routes.yaml`—redirects `www` to the naked domain and `php` application to serve HTTP.
--  `.magento/services.yaml`—sets up a MySQL instance, including Redis and ElasticSearch. 
--  `composer.json`—fetches the Magento Enterprise Edition and configuration scripts to prepare your application.
+![Estilizando](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/styling.png)
+![Estilizada](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/stylized.png)
 
-## Developer documentation
+#### Página do Produto (PDP)
 
-See the [Magento Commerce Cloud Guide](https://devdocs.magento.com/cloud/bk-cloud.html).
+![PDP](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/pdp.png)
 
-## License
-Each Magento source file included in this distribution is licensed under the OSL-3.0 license.
+#### Página do Carrinho
 
-Please see [LICENSE.txt](https://github.com/magento/magento-cloud/blob/master/LICENSE.txt) for the full text of the [Open Software License v. 3.0 (OSL-3.0)](http://opensource.org/licenses/osl-3.0.php).
-# m3
-# m3
+![Página do carrinho](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/cart-page.png)
+
+#### Minicart
+
+![Minicart](../sandboxm3/app/design/frontend/AI/ai/web/images/previews/minicart.png)
